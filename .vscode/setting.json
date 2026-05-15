@@ -1,0 +1,8 @@
+{
+  // ファイル保存時に自動でコードを整形（フォーマット）する
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "ms-python.python",
+
+  // Pythonの解析ツール設定
+  "python.analysis.typeCheckingMode": "basic",
+}

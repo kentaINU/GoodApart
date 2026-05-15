@@ -1,0 +1,10 @@
+requests==2.31.0
+supabase==2.3.0
+pydantic==2.6.1
+beautifulsoup4
+geopy
+uvicorn
+fastapi
+sqlalchemy
+psycopg2-binary
+geoalchemy2[shapely]

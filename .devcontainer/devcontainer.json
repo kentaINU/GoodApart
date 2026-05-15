@@ -1,0 +1,28 @@
+{
+  "name": "Fukuoka Monthly Map Dev Environment",
+  // ここを dockerComposeFile に変更
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "backend",
+  "workspaceFolder": "/workspace",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "njpwerner.autodocstring",
+        "charliermarsh.ruff",
+        "mhutchie.git-graph",
+        "donjayamanne.githistory",
+        "ckotzbauer.vscode-pg-client" // PostgreSQL管理用の拡張機能を追加すると便利です
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.organizeImports": "explicit"
+        },
+        "python.defaultFormatter": "charliermarsh.ruff"
+      }
+    }
+  },
+  "remoteUser": "root"
+}
