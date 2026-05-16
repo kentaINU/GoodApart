@@ -21,3 +21,6 @@ COPY . .
 
 # コンテナ起動時のデフォルトコマンド（必要に応じて）
 # CMD ["python", "main.py"]
+
+# Render.com用
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port $PORT"]
