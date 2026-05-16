@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  # バックエンド
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    volumes:
+      - .:/workspace:cached
+    environment:
+      - DATABASE_URL=postgresql://user:password@db:5432/fukuoka_monthly
+    depends_on:
+      - db
+    tty: true
+
+  # DB
+  db:
+    image: postgis/postgis:15-3.3
+    restart: always
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=fukuoka_monthly
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  
+  # フロント
+  frontend:
+    build:
+      context: ./backend
+    volumes:
+      - ./frontend:/workspace/frontend
+    working_dir: /workspace/frontend
+    ports:
+      - "3000:3000"
+    command: npm run dev
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
