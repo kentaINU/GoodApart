@@ -1,0 +1,33 @@
+name: Supabase Database CD (via Python Models)
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - 'backend/models.py'
+
+jobs:
+  deploy-db:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/actions-setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # テーブル作成に必要な最小限のライブラリだけをインストール
+      - name: Install dependencies
+        run: |
+          pip install sqlalchemy psycopg2-binary geoalchemy2
+
+      # 本番のURLを環境変数に注入し、Python経由でSupabaseにテーブルを作らせる
+      - name: Run models.py to sync schema
+        env:
+          DATABASE_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          cd backend
+          python -c "import models; print('テーブル構築に成功しました')"
