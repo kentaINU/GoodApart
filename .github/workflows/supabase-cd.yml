@@ -31,4 +31,4 @@ jobs:
           DATABASE_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: |
           cd backend
-          python -c "import models; from database import engine; models.Base.metadata.create_all(bind=engine); print('本番DBへのテーブル構築命令を強制実行しました')"
+          python -c "import models; models.Base.metadata.create_all(bind=models.engine); print('本番DBへのテーブル構築命令を強制実行しました')"
