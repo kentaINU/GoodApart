@@ -3,7 +3,7 @@ name: Supabase Database CD (via Alembic)
 on:
   push:
     branches:
-      - develop
+      - main
     paths:
       - 'backend/database/**'
       - 'backend/alembic/**'
