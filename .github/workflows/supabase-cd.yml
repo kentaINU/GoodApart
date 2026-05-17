@@ -1,4 +1,4 @@
-name: Supabase Database CD (via Alembic)
+name: Supabase Database CD
 
 on:
   push:
@@ -32,4 +32,4 @@ jobs:
         run: |
           cd backend
           python -m alembic upgrade head
-          echo "🎉 本番DB（Supabase）へ最新のマイグレーションを適用しました。"
+          echo "本番DB（Supabase）へ最新のマイグレーションを適用しました。"
