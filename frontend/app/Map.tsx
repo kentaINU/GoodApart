@@ -5,6 +5,15 @@ import "leaflet/dist/leaflet.css";
 import { useEffect, useState } from "react";
 import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 
+interface Property {
+    id: number | string;
+    name: string;
+    price: number | string;
+    address: string;
+    lat: number;
+    lng: number;
+}
+
 const icon = L.icon({
     iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
     shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
@@ -13,13 +22,15 @@ const icon = L.icon({
 });
 
 export default function Map() {
-    const [properties, setProperties] = useState<any[]>([]);
+    const [properties, setProperties] = useState<Property[]>([]);
 
-    // FastAPIからデータを取ってくる
     useEffect(() => {
+        if (!process.env.NEXT_PUBLIC_API_URL) return;
+        
         fetch(`${process.env.NEXT_PUBLIC_API_URL}/properties`)
             .then((res) => res.json())
-            .then((data) => setProperties(data));
+            .then((data: Property[]) => setProperties(data))
+            .catch((err) => console.error("Fetch error:", err));
     }, []);
 
     return (
