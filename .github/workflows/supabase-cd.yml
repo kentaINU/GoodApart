@@ -1,4 +1,4 @@
-name: Supabase Database CD
+name: Supabase Database CD (via Alembic)
 
 on:
   push:
@@ -23,13 +23,12 @@ jobs:
       - name: Install dependencies
         run: |
           cd backend
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # Alembicを使って本番DBにマイグレーションを適用する
       - name: Run Alembic Migration
         env:
           DATABASE_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: |
           cd backend
           alembic upgrade head
-          print("本番DB（Supabase）へ最新のマイグレーションを適用しました。")
