@@ -6,6 +6,7 @@ on:
       - develop
     paths:
       - 'backend/database/**'
+      - 'backend/alembic/**'
       - '.github/workflows/*'
 
 jobs:
@@ -20,15 +21,12 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install dependencies
-        run: |
-          cd backend
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: Run Alembic Migration
+      - name: Install dependencies and Run Alembic
         env:
           DATABASE_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: |
           cd backend
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          
           alembic upgrade head
