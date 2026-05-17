@@ -5,7 +5,8 @@ on:
     branches:
       - develop
     paths:
-      - 'backend/models.py'
+      # 💡 models.py から、database フォルダ配下の変更を検知するように修正
+      - 'backend/database/models/**'
       - '.github/workflows/supabase-cd.yml'
 
 jobs:
@@ -20,15 +21,17 @@ jobs:
         with:
           python-version: '3.11'
 
-      # テーブル作成に必要な最小限のライブラリだけをインストール
+      # 💡 requirements.txt が backend/ にある想定で、そこから一括インストールする方が安全です
+      # (もし個別にやるなら、インポートエラーを防ぐために requests や pydantic などの依存も必要になる場合があるため)
       - name: Install dependencies
         run: |
-          pip install sqlalchemy psycopg2-binary geoalchemy2
+          cd backend
+          pip install -r requirements.txt
 
-      # 本番のURLを環境変数に注入し、Python経由でSupabaseにテーブルを作らせる
-      - name: Run models.py to sync schema
+      # 💡 パッケージとして初期化関数（create_tables）を呼び出すように修正
+      - name: Run database.models to sync schema
         env:
           DATABASE_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: |
           cd backend
-          python -c "import models; models.Base.metadata.create_all(bind=models.engine); print('本番DBへのテーブル構築命令を強制実行しました')"
+          python -c "from database.models import create_tables; create_tables(); print('本番DBへのテーブル構築・更新命令を強制実行しました')"

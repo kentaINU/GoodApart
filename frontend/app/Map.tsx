@@ -8,10 +8,13 @@ import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 interface Property {
     id: number | string;
     name: string;
-    price: number | string;
+    price: number;
+    price_text: string;
     address: string;
-    lat: number;
-    lng: number;
+    site_name: string;
+    source_url: string;
+    lat: number | null;
+    lng: number | null;
 }
 
 const icon = L.icon({
@@ -25,9 +28,10 @@ export default function Map() {
     const [properties, setProperties] = useState<Property[]>([]);
 
     useEffect(() => {
-        if (!process.env.NEXT_PUBLIC_API_URL) return;
-        
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/properties`)
+        // APIのURL（未設定の場合はローカルホストをデフォルトにすると開発がスムーズです）
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
+        fetch(`${apiUrl}/properties`)
             .then((res) => res.json())
             .then((data: Property[]) => setProperties(data))
             .catch((err) => console.error("Fetch error:", err));
@@ -45,12 +49,42 @@ export default function Map() {
             />
 
             {properties.map((prop) => (
-                prop.lat && prop.lng && (
+                // 💡 緯度経度が正常に存在する場合のみマーカーを描画
+                prop.lat !== null && prop.lng !== null && (
                     <Marker key={prop.id} position={[prop.lat, prop.lng]} icon={icon}>
                         <Popup>
-                            <strong>{prop.name}</strong><br />
-                            {prop.price}円/日<br />
-                            {prop.address}
+                            <div style={{ minWidth: "200px" }}>
+                                <strong style={{ fontSize: "14px" }}>{prop.name}</strong>
+                                <hr style={{ margin: "8px 0", border: "0", borderTop: "1px solid #eee" }} />
+
+                                {/* 💡 きれいにパースした賃料テキストを表示 */}
+                                <span style={{ color: "#e53e3e", fontWeight: "bold", fontSize: "14px" }}>
+                                    {prop.price_text}
+                                </span>
+                                <br />
+
+                                <span style={{ fontSize: "12px", color: "#666" }}>
+                                    住所: {prop.address}
+                                </span>
+                                <br />
+
+                                {/* 💡 元サイトへの直接リンクを設置 */}
+                                <div style={{ marginTop: "10px", textAlign: "right" }}>
+                                    <a
+                                        href={prop.source_url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        style={{
+                                            color: "#3182ce",
+                                            textDecoration: "underline",
+                                            fontSize: "12px",
+                                            fontWeight: "bold"
+                                        }}
+                                    >
+                                        元サイトで詳細を見る ↗
+                                    </a>
+                                </div>
+                            </div>
                         </Popup>
                     </Marker>
                 )

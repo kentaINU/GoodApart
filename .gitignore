@@ -1,0 +1,49 @@
+# ==========================================
+# IDE & System Files
+# ==========================================
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+*~
+*.log
+
+# ==========================================
+# Docker & Environments (Security)
+# ==========================================
+.env
+.env.local
+.env.*.local
+
+# ==========================================
+# Backend (FastAPI / Python) Generic
+# ==========================================
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+**/.pytest_cache/
+**/.mypy_cache/
+.venv/
+venv/
+env/
+
+# Backend Specific Data / Temporary Outputs
+backend/html_data/
+backend/properties.json
+
+# ==========================================
+# Frontend (Next.js / Node.js) Generic
+# ==========================================
+**/node_modules/
+frontend/.next/
+frontend/out/
+frontend/build/
+.pnpm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# TypeScript/Lint cache
+.eslintcache
+*.tsbuildinfo
