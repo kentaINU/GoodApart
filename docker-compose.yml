@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  # バックエンド
+  # バックエンド (FastAPI)
   backend:
     build:
       context: ./backend
@@ -12,33 +12,37 @@ services:
       - DATABASE_URL=postgresql://user:password@db:5432/fukuoka_monthly
     depends_on:
       - db
+    command: sleep infinity
     tty: true
 
-  # DB
+  # 空間データベース (PostGIS)
   db:
     image: postgis/postgis:15-3.3
     restart: always
     environment:
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=fukuoka_monthly
+      - Postgres_USER=user
+      - Postgres_PASSWORD=password
+      - Postgres_DB=fukuoka_monthly
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
   
-  # フロント
+  # フロントエンド (Next.js 15)
   frontend:
     build:
-      context: ./backend
+      context: ./frontend
+      dockerfile: Dockerfile
     volumes:
-      - ./frontend:/workspace/frontend
-    working_dir: /workspace/frontend
+      - ./frontend:/workspace
+      - /workspace/node_modules
+    working_dir: /workspace
     ports:
       - "3000:3000"
-    command: npm run dev
+    command: sh -c "npm install && npm run dev"
     depends_on:
       - backend
+    tty: true
 
 volumes:
   postgres_data:
