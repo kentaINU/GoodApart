@@ -1,13 +1,12 @@
-name: Supabase Database CD (via Python Models)
+name: Supabase Database CD
 
 on:
   push:
     branches:
       - develop
     paths:
-      # 💡 models.py から、database フォルダ配下の変更を検知するように修正
-      - 'backend/database/models/**'
-      - '.github/workflows/supabase-cd.yml'
+      - 'backend/database/**'
+      - '.github/workflows/*'
 
 jobs:
   deploy-db:
@@ -21,17 +20,16 @@ jobs:
         with:
           python-version: '3.11'
 
-      # 💡 requirements.txt が backend/ にある想定で、そこから一括インストールする方が安全です
-      # (もし個別にやるなら、インポートエラーを防ぐために requests や pydantic などの依存も必要になる場合があるため)
       - name: Install dependencies
         run: |
           cd backend
           pip install -r requirements.txt
 
-      # 💡 パッケージとして初期化関数（create_tables）を呼び出すように修正
-      - name: Run database.models to sync schema
+      # Alembicを使って本番DBにマイグレーションを適用する
+      - name: Run Alembic Migration
         env:
           DATABASE_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: |
           cd backend
-          python -c "from database.models import create_tables; create_tables(); print('本番DBへのテーブル構築・更新命令を強制実行しました')"
+          alembic upgrade head
+          print("本番DB（Supabase）へ最新のマイグレーションを適用しました。")
