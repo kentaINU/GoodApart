@@ -30,3 +30,4 @@ jobs:
           pip install -r requirements.txt
           
           python -m alembic.config upgrade head
+          echo "deploy完了"
